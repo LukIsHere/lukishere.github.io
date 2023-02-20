@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" href="./style/main.css" />
+    <link rel="manifest" href="/manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div class="container">
+      <img src="./obrazki/logo/channels4_profile (1).jpg" class="pp" alt="luk">
+      <txt id="hello" class="hello"></txt>
+      <txt>
+        <p>-🧩 stworzyłem : <a href="https://github.com/luktvpl/mcpp" target="_blank">MC++</a>, <a href="https://github.com/luktvpl/PNGluk" target="_blank">pngLuk'a</a> i <a href="https://github.com/luktvpl/codePlayer" target="_blank">codePlayer'a</a></p>
+        <p>-🕹️ gram w : Minecraft BE i Pokemon Unite</p>
+        <p>-⌨️ znam : JavaScript, C++ i <a href="">LScript(soon)</a></p>
+        <p>-❤️ lubię : programować i rysować</p>
+        <p>-🎟️ yt : <a href="https://www.youtube.com/channel/UCpz-9Ev8oLtrtZqWG4QaiEg" target="_blank">zły luk</a> i <a href="https://www.youtube.com/channel/UC56jZvKTddM2OJMZeAWiYBg" target="_blank">luk dev</a></p>
+        <p>-🌐 discord : luk#3380</p>
+        <p>-💻 github : <a href="https://github.com/luktvpl" target="_blank">tu</a></p>
+        <p>-☕ kawa : <a href="https://www.buymeacoffee.com/luktvpl" target="_blank">tu</a></p>
+        <p>css nie jest moją mocną stroną</p>
+      </txt>
+    </div>
+  </body>
+  <script src="./script.js"></script>
+</html>
