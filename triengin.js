@@ -1,21 +1,15 @@
-var canva = document.getElementById("screen");
-var ctx = canva.getContext("2d");
-
 function degreeToRadian(degree) {
     return degree * 3.14159265359 / 180.0;
 }
 
-
-
-
 function setColor(c){
     ctx.fillStyle = c;
 }
-function clear(){
-    setColor("white")
-    ctx.fillRect(0,0,100,100);
+function clear(c="white"){
+    setColor(c)
+    ctx.fillRect(0,0,400,400);
 }
-function drawline(x1,y1,x2,y2,w,c="white"){
+function drawLine(x1,y1,x2,y2,w,c="white"){
     ctx.beginPath();
     ctx.strokeStyle = c;
     ctx.lineWidth = w;
