@@ -45,11 +45,6 @@ function dst(p1,p2){
     return Math.sqrt( Math.pow((p1.x-p2.x), 2) + Math.pow((p1.y-p2.y), 2) );
 }
 
-class pointPTR{
-    num;
-    sub = [];
-}
-
 function calc(p = new point(0,0),rotation=0,offSet = new point(0,0),scale = 1){
     var rad = degreeToRadian(rotation);
     //rotaing, scaling and moving
@@ -58,141 +53,68 @@ function calc(p = new point(0,0),rotation=0,offSet = new point(0,0),scale = 1){
     afterCalc.y = (((scale)*p.x)*Math.sin(rad) + ((scale)*p.y)*Math.cos(rad)) + offSet.y;
     return afterCalc;
 }
-class shape{
-    type = 0;
-    points = [0];
-    color = "black";
-    constructor(type,points = [0]){
 
-    }
-    static triangle(p1,p2,p3,c){
-        var out = new shape;
-        out.type = 1;
-        out.points[0] = p1;
-        out.points[1] = p2;
-        out.points[2] = p3;
-        out.color = c;
-        return out;
-    }
-    static circle(p,r,c){
-        var out = new shape;
-        out.type = 3;
-        out.points[0] = p;
-        out.points[1] = r;
-        out.color = c;
-        return out;
-    }
-    static line(p1,p2,thickness,c){
-        var out = new shape;
-        out.type = 2;
-        out.points[0] = p1;
-        out.points[1] = p2;
-        out.points[2] = thickness;
-        out.color = c;
-        return out;
-    }
-    draw(prevPoints,nowPoints){
-        switch (this.type){
-            case 1:
-                var points = [];
-                try{
-                    for(var i = 0;i<3;i++){
-                        if(this.points[i]&0b10000000){
-                            points[i] = prevPoints[this.points[i]&0b01111111];
-                        }else{
-                            points[i] = nowPoints[this.points[i]&0b01111111];
-                        }
-                    }
-                    drawTri(points[0].x,points[0].y,points[1].x,points[1].y,points[2].x,points[2].y,this.color);
-                }catch{
-                    console.log("corupted shape");
-                }
-                
-            break;
-            case 2:
-                //to-do
-            break;
-            case 3:
-                //to-do
-            break;
-        }
+
+class pointPTR{
+    id;
+    prev;
+    constructor(id=0,prev=false){
+        this.id = id;
+        this.prev = prev;
     }
 }
-var dabug = true;
-class object{
-    points = [new point(0,0)];
-    pointsAfterCalc = [new point(0,0)];
-    shapes = [new shape(0)];
-    position = new point(0,0);
+
+function pp(id=0,prev=false){
+    return new pointPTR(id,prev);
+}
+class shape{
+    p1 = pp();
+    p2 = pp();
+    p3 = pp();
+    c = "white";
+    type = 0;
+    constructor(p1=pp(),p2=pp(),p3=pp(),c="white",type=0){
+        this.p1 = p1;
+        this.p2 = p2;
+        this.p3 = p3;
+        this.c = c;
+        this.type = type;
+    }
+    static triangle(p1=pp(),p2=pp(),p3=pp(),c="white"){
+        return new shape(p1,p2,p3,c,0);
+    }
+    static line(p1=pp(),p2=pp(),thickness=1,c="white"){
+        return new shape(p1,p2,thickness,c,1);
+    }
+    draw(pnow = [pp()],pprev=[pp()]){
+
+    }
+}
+
+class triObject{
+    points = [p(0,0),p(0,0),p(0,0)];
+    shapes = [shape.triangle(pp(),pp(),pp(),"white")];
+    subobjects = [];
+    parpoint = 0;
     rotation = 0;
     scale = 1;
-    subObjects = [];
-    constructor(){
-        this.points = [];
-        this.pointsAfterCalc = [];
-        this.shapes = [];
+    constructor(points = [p(0,0),p(0,0),p(0,0)],shapes = [shape.triangle(pp(),pp(),pp(),"white")],rotation=0,scale=1){
+        this.points = points;
+        this.triangles = triangles;
+        this.lines = lines;
+        this.rotation = rotation;
+        this.scale = scale;
     }
-    draw(prev = undefined,offSet = new point(0,0),rotation=0){//outpoint = offset+pos+Calc(point)
-        offSet.x += this.position.x;
-        offSet.y += this.position.y;
-        this.points.forEach((p,i)=>{
-            this.pointsAfterCalc[i] = calc(p,rotation+this.rotation,offSet,this.scale);
+    draw(x,y,prev=this.points,rotation,scale){
+        var newPoints = [];
+        this.points.forEach((po,i)=>{
+            newPoints[i] = calc(po,rotation,p(x,y),scale);
         })
-        this.shapes.forEach(s=>{
-            if(prev==undefined)s.draw(undefined,this.pointsAfterCalc);
-            else s.draw(prev.pointsAfterCalc,this.pointsAfterCalc);
+        this.shapes.forEach(shape => {
+            shape.draw(prev,newPoints,p(x,y),rotation,scale);
         })
-        this.subObjects.forEach(so=>{
-            so.draw(this,offSet,this.rotation)//to do
+        this.subobjects.forEach(sub => {
+            sub.draw(newPoints[sub.parpoint].x,newPoints[sub.parpoint].y,newPoints,rotation+this.rotation,scale*this.scale);
         })
-        if(dabug){
-            ctx.fillStyle = "red";
-            ctx.fillRect(offSet.x-2,offSet.y-2,4,4);
-        }
-    };
-    showPoints(){
-        this.pointsAfterCalc.forEach(p=>{
-            ctx.fillStyle = "red";
-            ctx.fillRect(p.x-2,p.y-2,4,4)
-        })
-        this.subObjects.forEach(o=>{
-            o.showPoints();
-        })
-    }
-    getClosest(p = new point(0,0),min = 50,out = new pointPTR()){
-        out.num = -1;
-        this.pointsAfterCalc.forEach(poi=>{
-            if(dst(p,poi)<min){
-                min = dst(p,poi);
-                
-            }
-        })
-    }
-    showThis(ptr = new pointPTR()){
-
     }
 }
-
-
-function getPrev(id){
-    return id|0b10000000;
-}
-
-// var test = new object();
-
-// test.position = new point(30,30);
-// test.points.push(new point(10,0));
-// test.points.push(new point(0,0));
-// test.points.push(new point(0,10));
-// test.shapes.push(shape.triangle(0,1,2,"green"));
-// test.scale = 3;
-// test.subObjects.push(new object());
-// test.subObjects[0].points.push(new point(10,10));
-// test.subObjects[0].shapes.push(shape.triangle(0,getPrev(0),getPrev(2),"yellow"));
-// setInterval(() => {
-//     clear();
-//     test.rotation += 3;
-//     test.draw();
-//     test.showPoints();
-    
-// }, 33);

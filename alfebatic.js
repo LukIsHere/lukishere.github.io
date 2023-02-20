@@ -1,9 +1,10 @@
 function draw(obj,xs,ys,dx,dy,size){
+    var t = "black";
     var sx = dx/size;
     var sy = dy/size;
     for(var ix = 0;ix<size;ix++){
         for(var iy = 0;iy<size;iy++){
-            style(obj[ix][iy]);
+            setColor(obj[ix][iy]);
             if(obj[ix][iy]!=t)ctx.fillRect(ys+(sy*iy),xs+(sx*ix),sx,sy);
         }
     }
@@ -19,6 +20,7 @@ function drawCenter(obj,ys,dx,dy,size){
     }
 }
 function letter(l,xs,ys,c="white",dx=100,dy=100){
+    var t = "black";
     switch (l.toLowerCase()){
         case "a":
             draw([[t,t,c,t,t],[t,c,t,c,t],[t,c,c,c,t],[c,t,t,t,c],[c,t,t,t,c]], xs, ys, dx, dy ,5)
@@ -150,8 +152,14 @@ function letter(l,xs,ys,c="white",dx=100,dy=100){
 }
 function printLine(text,xs,ys,c="w",fsize = 50){
     var sindex = 0;
+    var alr = 0;
     for(var i = 0;i<text.length;i++){
         if(text.charAt(i)==" ")sindex +=fsize/2
-        letter(text.charAt(i),ys,xs+((fsize+fsize/10)*i-sindex),c,fsize,fsize)
+        if(text.charAt(i)=="\n"){
+            ys+= (fsize+fsize/10);
+            alr=-1;
+        }
+        letter(text.charAt(i),ys,xs+((fsize+fsize/10)*alr),c,fsize,fsize)
+        alr++;
     }
 }

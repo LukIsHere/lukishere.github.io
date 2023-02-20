@@ -6,8 +6,8 @@ body{
 font-size: 1cm;
 z-index:1;
 font-family: minecraft_pl_font;
-background-color: rgb(31, 31, 31);
 color: #ffffff;
+background-color: black;
 }
 .pp{
   border-radius: 10%;
